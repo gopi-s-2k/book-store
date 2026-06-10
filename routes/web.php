@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\BooksController;
+use App\Http\Controllers\WeatherController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -21,4 +22,5 @@ Route::middleware("auth:admin")->prefix('admin')->group(function(){
     Route::match(["get","put"],'books/edit/{book_id}',[BooksController::class,'editBook'])->name('admin.books.edit');
     Route::patch('books/avail/{book_id}',[BooksController::class,'toggleAvailability'])->name('admin.books.avail');
     Route::delete('books/delete/{book_id}',[BooksController::class,'deleteBook'])->name('admin.books.delete');
+    Route::get("weather-by-latlon",[WeatherController::class,'getWeatherByLatLon'])->name('weather.latlon');
 });
