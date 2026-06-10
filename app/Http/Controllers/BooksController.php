@@ -93,16 +93,31 @@ class BooksController extends Controller
     {
         $book = Book::find($book_id);
         if (!$book) {
-            return redirect()->back()->withErrors([
+            return response()->json([
                 'success' => false,
                 'book' => 'Book not found!'
-            ]);
+            ],400);
         }
         $book->available = (int)!$book->available;
         $book->save();
         return response()->json([
             'success' => true,
             'available' => $book->available,
+        ]);
+    }
+
+    public function deleteBook(Request $request, int $book_id)
+    {
+        $book = Book::find($book_id);
+        if (!$book) {
+            return response()->json([
+                'success' => false,
+                'book' => 'Book not found!'
+            ],400);
+        }
+        $book->delete();
+        return response()->json([
+            'success' => true
         ]);
     }
 }

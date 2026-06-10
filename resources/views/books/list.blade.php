@@ -32,9 +32,13 @@
                             <td>{{ $book->stocks }}</td>
                             <td>
                                 {{-- @if ($book->available) --}}
-                                    <span id="book-avail-{{$book->id}}" style="display:{{$book->available ? "block" : "none"}}" class="badge bg-success">Available</span>
+                                <span id="book-avail-{{ $book->id }}"
+                                    style="display:{{ $book->available ? 'block' : 'none' }}"
+                                    class="badge bg-success">Available</span>
                                 {{-- @else --}}
-                                    <span id="book-unavail-{{$book->id}}" style="display:{{$book->available ? "none" : "block"}}" class="badge bg-danger">Unavailable</span>
+                                <span id="book-unavail-{{ $book->id }}"
+                                    style="display:{{ $book->available ? 'none' : 'block' }}"
+                                    class="badge bg-danger">Unavailable</span>
                                 {{-- @endif --}}
                             </td>
                             <td>
@@ -50,15 +54,9 @@
                                         {{ $book->available ? 'Unavail' : 'Avail' }}
                                     </button>
 
-                                    <form action="{{ route('admin.books.delete', $book) }}" method="POST"
-                                        onsubmit="return confirm('Delete this book?')">
-                                        @csrf
-                                        @method('DELETE')
-
-                                        <button class="btn btn-sm btn-danger">
-                                            Delete
-                                        </button>
-                                    </form>
+                                    <button data-id="{{ $book->id }}" class="delete-book btn btn-sm btn-danger">
+                                        Delete
+                                    </button>
 
                                 </div>
                             </td>
@@ -83,8 +81,8 @@
             const button = $(this);
             const bookId = button.data('id');
 
-            let url = "{{route('admin.books.avail',['book_id' => ':book_id'])}}";
-            let newurl = url.replace(":book_id",bookId);
+            let url = "{{ route('admin.books.avail', ['book_id' => ':book_id']) }}";
+            let newurl = url.replace(":book_id", bookId);
 
 
             $.ajax({
@@ -112,6 +110,34 @@
                     }
 
                     showToast('Status updated');
+                }
+            });
+        });
+        $(document).on('click', '.delete-book', function() {
+            const button = $(this);
+            const bookId = button.data('id');
+
+            action = confirm('Continue to Delete the book?');
+            if(!action){
+                return;
+            }
+
+            let url = "{{ route('admin.books.delete', ['book_id' => ':book_id']) }}";
+            let newurl = url.replace(":book_id", bookId);
+
+            $.ajax({
+                url: newurl,
+                type: 'DELETE',
+                data: {
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function(response) {
+                    if (response.success) {
+                        button.closest('tr').remove();
+                        showToast('deleed successfully');
+                    } else {
+                        showToast('Error while deleting the book');
+                    }
                 }
             });
         });
