@@ -1,0 +1,14 @@
+.landscape-card-img {
+  height: 100%;
+  min-height: 120px;
+  background-color: #e9ecef;
+  object-fit: cover;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.admin-table td {
+  vertical-align: middle;
+}
